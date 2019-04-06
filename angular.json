@@ -37,6 +37,134 @@
           }
         }
       }
+    },
+    "ngx-subtle-crypto-app": {
+      "root": "projects/ngx-subtle-crypto-app/",
+      "sourceRoot": "projects/ngx-subtle-crypto-app/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngx-subtle-crypto-app",
+            "index": "projects/ngx-subtle-crypto-app/src/index.html",
+            "main": "projects/ngx-subtle-crypto-app/src/main.ts",
+            "polyfills": "projects/ngx-subtle-crypto-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-subtle-crypto-app/tsconfig.app.json",
+            "assets": [
+              "projects/ngx-subtle-crypto-app/src/favicon.ico",
+              "projects/ngx-subtle-crypto-app/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-subtle-crypto-app/src/styles.css"
+            ],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ngx-subtle-crypto-app/src/environments/environment.ts",
+                  "with": "projects/ngx-subtle-crypto-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ngx-subtle-crypto-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ngx-subtle-crypto-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngx-subtle-crypto-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-subtle-crypto-app/src/test.ts",
+            "polyfills": "projects/ngx-subtle-crypto-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-subtle-crypto-app/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-subtle-crypto-app/karma.conf.js",
+            "styles": [
+              "projects/ngx-subtle-crypto-app/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/ngx-subtle-crypto-app/src/favicon.ico",
+              "projects/ngx-subtle-crypto-app/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-subtle-crypto-app/tsconfig.app.json",
+              "projects/ngx-subtle-crypto-app/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-subtle-crypto-app-e2e": {
+      "root": "projects/ngx-subtle-crypto-app-e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ngx-subtle-crypto-app-e2e/protractor.conf.js",
+            "devServerTarget": "ngx-subtle-crypto-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ngx-subtle-crypto-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/ngx-subtle-crypto-app-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-subtle-crypto"
