@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-subtle-crypto": [
+        "dist/ngx-subtle-crypto"
+      ],
+      "ngx-subtle-crypto/*": [
+        "dist/ngx-subtle-crypto/*"
+      ]
+    }
   }
 }
