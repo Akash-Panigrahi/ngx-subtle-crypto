@@ -15,7 +15,8 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "downlevelIteration": true
   },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": true,
