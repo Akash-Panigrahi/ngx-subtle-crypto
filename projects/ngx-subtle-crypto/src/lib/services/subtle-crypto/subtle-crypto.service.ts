@@ -1,17 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
 
-import { stringToArrayBuffer, arrayBufferToString } from '../../utils';
+import { stringToArrayBuffer, arrayBufferToString, hexString } from '../../utils';
+import { DigestReturnForm, DigestAlgorithms, DataToDigest } from '../../types/digest';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SubtleCryptoService {
 
-  constructor() { }
+    constructor() { }
 
-  digest(algorithm: string = 'SHA-256', data: string): Observable<string> {
-    const digestValue = window.crypto.subtle.digest(algorithm, stringToArrayBuffer(data));
-    return from(digestValue.then(arrayBufferToString));
-  }
+    digest(algorithm: DigestAlgorithms, dataToDigest: DataToDigest, returnForm?: DigestReturnForm): Promise<string> {
+        return Promise.resolve(
+            window.crypto.subtle.digest(algorithm || 'SHA-256', stringToArrayBuffer(dataToDigest.toString()))
+                .then(digestedData => {
+                    let convertedData: string;
+
+                    if (returnForm === 'hexString') {
+                        convertedData = hexString(digestedData);
+                    } else {
+                        convertedData = arrayBufferToString(digestedData);
+                    }
+
+                    return convertedData;
+                })
+        );
+    }
 }

@@ -25,6 +25,7 @@
       "ngx-subtle-crypto/*": [
         "dist/ngx-subtle-crypto/*"
       ]
-    }
+    },
+    "downlevelIteration": true
   }
 }
