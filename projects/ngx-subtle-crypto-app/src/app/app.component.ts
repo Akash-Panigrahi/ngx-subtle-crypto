@@ -13,8 +13,6 @@ export class AppComponent implements OnInit {
     digestedValue: any;
     signedValue: any;
     verifiedValue: any;
-    hexSignedValue;
-    hexVerifiedValue;
     keyPair: any;
     key: CryptoKey;
 
@@ -30,7 +28,7 @@ export class AppComponent implements OnInit {
 
     digest(): void {
         this._subtleCrypto
-            .digest('SHA-256', this.value/* , 'hexString' */)
+            .digest('SHA-256', this.value)
             .then(data => this.setDigestedValue(data));
     }
 
@@ -81,17 +79,8 @@ export class AppComponent implements OnInit {
                 'HMAC',
                 this.key,
                 this.value,
-                // 'hexString'
             )
             .then(signedValue => this.setSignedValue(signedValue));
-
-        this._subtleCrypto.sign(
-                'HMAC',
-                this.key,
-                this.value,
-                'hexString'
-            )
-            .then(hexSignedValue => this.setHexSignedValue(hexSignedValue));
     }
 
     setSignedValue(signedValue): void {
@@ -100,39 +89,17 @@ export class AppComponent implements OnInit {
         this.verify();
     }
 
-    setHexSignedValue(hexSignedValue): void {
-        this.hexSignedValue = hexSignedValue;
-
-        this.verifyHex();
-    }
-
     verify() {
         this._subtleCrypto.verify(
                 'HMAC',
                 this.key,
                 this.signedValue,
                 this.value,
-                // 'hexString'
             )
             .then(verifiedValue => this.setVerifiedValue(verifiedValue));
     }
 
-    verifyHex() {
-        this._subtleCrypto.verify(
-                'HMAC',
-                this.key,
-                this.hexSignedValue,
-                this.value,
-                'hexString'
-            )
-            .then(hexVerifiedValue => this.setHexVerifiedValue(hexVerifiedValue));
-    }
-
     setVerifiedValue(verifiedValue): void {
         this.verifiedValue = verifiedValue;
-    }
-
-    setHexVerifiedValue(hexVerifiedValue): void {
-        this.hexVerifiedValue = hexVerifiedValue;
     }
 }

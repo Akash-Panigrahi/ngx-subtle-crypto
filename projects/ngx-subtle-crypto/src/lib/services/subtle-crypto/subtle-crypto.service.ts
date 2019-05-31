@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { convertData, properData } from '../../utils';
-
-import { DigestStringForm, DigestAlgorithm, DataToDigest } from '../../types/digest';
+import { DigestAlgorithm, DataToDigest } from '../../types/digest';
+import { VerifyAlgorithm, VerifyKey, VerifySignature, DataToVerify } from '../../types/verify';
+import { DataToSign, SignAlgorithm, SignKey } from '../../types/sign';
 import { GenrateKeyAlgorithm, GenrateKeyExtractable, GenrateKeyKeyUsages } from '../../types/generate-key';
 import { GenrateKeyPairAlgorithm, GenrateKeyPairExtractable, GenrateKeyPairKeyUsages } from '../../types/generate-key-pair';
-import { DataToSign, SignAlgorithm, SignKey, SignStringForm } from '../../types/sign';
-import { VerifyAlgorithm, VerifyKey, VerifySignature, DataToVerify, VerifyStringForm } from '../../types/verify';
 
 @Injectable({
     providedIn: 'root'
@@ -20,13 +19,12 @@ export class SubtleCryptoService {
     digest(
         algorithm    : DigestAlgorithm,
         dataToDigest : DataToDigest,
-        stringForm?  : DigestStringForm,
         bytes?       : number): Promise<string> {
 
         return Promise.resolve(
             this._subtle
-                .digest(algorithm, properData(dataToDigest, stringForm, bytes))
-                .then(digestedData => convertData(digestedData, stringForm, bytes))
+                .digest(algorithm, properData(dataToDigest, bytes))
+                .then(digestedData => convertData(digestedData, bytes))
         );
     }
 
@@ -34,13 +32,12 @@ export class SubtleCryptoService {
         algorithm   : SignAlgorithm,
         key         : SignKey,
         dataToSign  : DataToSign,
-        stringForm? : SignStringForm,
         bytes?      : number): Promise<string> {
 
         return Promise.resolve(
             this._subtle
-                .sign(algorithm, key, properData(dataToSign, stringForm, bytes))
-                .then(signedData => convertData(signedData, stringForm, bytes))
+                .sign(algorithm, key, properData(dataToSign, bytes))
+                .then(signedData => convertData(signedData, bytes))
         );
     }
 
@@ -49,7 +46,6 @@ export class SubtleCryptoService {
         key          : VerifyKey,
         signature    : VerifySignature,
         dataToVerify : DataToVerify,
-        stringForm?  : VerifyStringForm,
         bytes?       : number): Promise<boolean> {
 
         return Promise.resolve(
@@ -57,8 +53,8 @@ export class SubtleCryptoService {
                 .verify(
                     algorithm,
                     key,
-                    properData(signature, stringForm, bytes),
-                    properData(dataToVerify, stringForm, bytes)
+                    properData(signature, bytes),
+                    properData(dataToVerify, bytes)
                 )
                 .then(verifiedData => verifiedData)
         );
