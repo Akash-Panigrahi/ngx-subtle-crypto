@@ -13,15 +13,21 @@ export class AppComponent implements OnInit {
     hash;
     symSigned;
     asymSigned;
+    symEncrypted;
+    symDecrypted;
+    asymEncrypted;
+    asymDecrypted;
 
     constructor(
         private _subtleCrypto: SubtleCryptoService
     ) { }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.createHash();
         this.symSign();
         this.asymSign();
+        this.symEncrypt();
+        this.asymEncrypt();
     }
 
     async createHash(): Promise<void> {
@@ -48,5 +54,38 @@ export class AppComponent implements OnInit {
 
         this.asymSigned = signature;
         console.log('asymSign', verifyResult);
+    }
+
+    async symEncrypt(): Promise<void> {
+        const algorithm = { name: "AES-CTR", length: 256 };
+        const counter = window.crypto.getRandomValues(new Uint8Array(16));
+
+        const key = await this._subtleCrypto.generateKey(algorithm, true, ["encrypt", "decrypt"]);
+        const cipherText = await this._subtleCrypto.encrypt({
+            name: "AES-CTR",
+            counter,
+            length: 64
+          }, key, this.value);
+
+        const plainText = await this._subtleCrypto.decrypt({
+            name: "AES-CTR",
+            counter,
+            length: 64
+          }, key, cipherText);
+
+        this.symEncrypted = cipherText;
+        console.log('symEncrypt', plainText);
+    }
+
+    async asymEncrypt(): Promise<void> {
+        const algorithm = { name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" };
+
+        const { privateKey, publicKey } = await this._subtleCrypto.generateKeyPair(algorithm, true, ["encrypt", "decrypt"]);
+        const cipherText = await this._subtleCrypto.encrypt({ name: "RSA-OAEP" }, publicKey, this.value);
+
+        const plainText = await this._subtleCrypto.decrypt({ name: "RSA-OAEP" }, privateKey, cipherText);
+
+        this.asymEncrypted = cipherText;
+        console.log('asymEncrypt', plainText);
     }
 }

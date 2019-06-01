@@ -6,7 +6,8 @@ import { VerifyAlgorithm } from '../../types/verify';
 import { SignAlgorithm } from '../../types/sign';
 import { GenrateKeyAlgorithm } from '../../types/generate-key';
 import { GenrateKeyPairAlgorithm } from '../../types/generate-key-pair';
-import { SubtleKey, SubtleExtractable, SubtleKeyUsages, SubtleKeyPair, SubtleData } from '../../types/common';
+import { SubtleKey, SubtleExtractable, SubtleKeyUsages, SubtleKeyPair, SubtleData, PlainText, CipherText } from '../../types/common';
+import { DecryptAlgorithm, EncryptAlgorithm } from '../../types';
 
 @Injectable({
     providedIn: 'root'
@@ -58,6 +59,40 @@ export class SubtleCryptoService {
                     properData(dataToVerify, bytes)
                 )
                 .then(verifiedData => verifiedData)
+        );
+    }
+
+    encrypt(
+        algorithm    : EncryptAlgorithm,
+        key          : SubtleKey,
+        plainText    : PlainText,
+        bytes?       : number): Promise<CipherText> {
+
+        return Promise.resolve(
+            this._subtle
+                .encrypt(
+                    algorithm,
+                    key,
+                    properData(plainText, bytes)
+                )
+                .then(encrypted => convertData(encrypted, bytes))
+        );
+    }
+
+    decrypt(
+        algorithm    : DecryptAlgorithm,
+        key          : SubtleKey,
+        cipherText   : CipherText,
+        bytes?       : number): Promise<PlainText> {
+
+        return Promise.resolve(
+            this._subtle
+                .decrypt(
+                    algorithm,
+                    key,
+                    properData(cipherText, bytes)
+                )
+                .then(decrypted => convertData(decrypted, bytes))
         );
     }
 
