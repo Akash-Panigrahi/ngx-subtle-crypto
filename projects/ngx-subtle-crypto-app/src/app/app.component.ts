@@ -10,96 +10,43 @@ export class AppComponent implements OnInit {
     title = 'ngx-subtle-crypto-app';
 
     value = 'akash';
-    digestedValue: any;
-    signedValue: any;
-    verifiedValue: any;
-    keyPair: any;
-    key: CryptoKey;
+    hash;
+    symSigned;
+    asymSigned;
 
     constructor(
         private _subtleCrypto: SubtleCryptoService
     ) { }
 
     ngOnInit(): void {
-        this.digest();
-        this.generateKeyPair();
-        this.generateKey();
+        this.createHash();
+        this.symSign();
+        this.asymSign();
     }
 
-    digest(): void {
-        this._subtleCrypto
-            .digest('SHA-256', this.value)
-            .then(data => this.setDigestedValue(data));
+    async createHash(): Promise<void> {
+        this.hash = await this._subtleCrypto.digest('SHA-256', this.value);
     }
 
-    setDigestedValue(digestedValue: string): void {
-        this.digestedValue = digestedValue;
+    async symSign(): Promise<void> {
+        const algorithm = { name: "HMAC", hash: { name: "SHA-512" } };
+
+        const key = await this._subtleCrypto.generateKey(algorithm, true, ["sign", "verify"]);
+        const signature = await this._subtleCrypto.sign(algorithm, key, this.value);
+        const verifyResult = await this._subtleCrypto.verify(algorithm, key, signature, this.value);
+
+        this.symSigned = signature;
+        console.log('symSign', verifyResult);
     }
 
-    generateKeyPair(): void {
-        this._subtleCrypto
-            .generateKeyPair(
-                {
-                    name: "RSA-OAEP",
-                    modulusLength: 2048,
-                    publicExponent: new Uint8Array([1, 0, 1]),
-                    hash: "SHA-256",
-                },
-                true,
-                ["encrypt", "decrypt"]
-            )
-            .then(keyPair => this.setKeyPairs(keyPair));
-    }
+    async asymSign(): Promise<void> {
+        const algorithm = { name: "RSA-PSS", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" };
 
-    generateKey(): void {
-        this._subtleCrypto
-            .generateKey(
-                {
-                    name: "HMAC",
-                    hash: { name: "SHA-512" }
-                },
-                true,
-                ["sign", "verify"]
-            )
-            .then(key => this.setKey(key));
-    }
+        const { privateKey, publicKey } = await this._subtleCrypto.generateKeyPair(algorithm, true, ["sign", "verify"]);
+        const signature = await this._subtleCrypto.sign({ name: "RSA-PSS", saltLength: 32, }, privateKey, this.value);
+        const verifyResult = await this._subtleCrypto.verify({ name: "RSA-PSS", saltLength: 32, }, publicKey, signature, this.value);
 
-    setKeyPairs(keyPair: CryptoKeyPair): void {
-        this.keyPair = keyPair;
-    }
-
-    setKey(key: CryptoKey): void {
-        this.key = key;
-
-        this.sign();
-    }
-
-    sign() {
-        this._subtleCrypto.sign(
-                'HMAC',
-                this.key,
-                this.value,
-            )
-            .then(signedValue => this.setSignedValue(signedValue));
-    }
-
-    setSignedValue(signedValue): void {
-        this.signedValue = signedValue;
-
-        this.verify();
-    }
-
-    verify() {
-        this._subtleCrypto.verify(
-                'HMAC',
-                this.key,
-                this.signedValue,
-                this.value,
-            )
-            .then(verifiedValue => this.setVerifiedValue(verifiedValue));
-    }
-
-    setVerifiedValue(verifiedValue): void {
-        this.verifiedValue = verifiedValue;
+        this.asymSigned = signature;
+        console.log('asymSign', verifyResult);
     }
 }

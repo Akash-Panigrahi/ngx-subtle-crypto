@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { convertData, properData } from '../../utils';
-import { DigestAlgorithm, DataToDigest } from '../../types/digest';
-import { VerifyAlgorithm, VerifyKey, VerifySignature, DataToVerify } from '../../types/verify';
-import { DataToSign, SignAlgorithm, SignKey } from '../../types/sign';
-import { GenrateKeyAlgorithm, GenrateKeyExtractable, GenrateKeyKeyUsages } from '../../types/generate-key';
-import { GenrateKeyPairAlgorithm, GenrateKeyPairExtractable, GenrateKeyPairKeyUsages } from '../../types/generate-key-pair';
+import { DigestAlgorithm } from '../../types/digest';
+import { VerifyAlgorithm } from '../../types/verify';
+import { SignAlgorithm } from '../../types/sign';
+import { GenrateKeyAlgorithm } from '../../types/generate-key';
+import { GenrateKeyPairAlgorithm } from '../../types/generate-key-pair';
+import { Key, Extractable, KeyUsages } from '../../types/common';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,7 @@ export class SubtleCryptoService {
 
     digest(
         algorithm    : DigestAlgorithm,
-        dataToDigest : DataToDigest,
+        dataToDigest : string,
         bytes?       : number): Promise<string> {
 
         return Promise.resolve(
@@ -30,8 +31,8 @@ export class SubtleCryptoService {
 
     sign(
         algorithm   : SignAlgorithm,
-        key         : SignKey,
-        dataToSign  : DataToSign,
+        key         : Key,
+        dataToSign  : string,
         bytes?      : number): Promise<string> {
 
         return Promise.resolve(
@@ -43,9 +44,9 @@ export class SubtleCryptoService {
 
     verify(
         algorithm    : VerifyAlgorithm,
-        key          : VerifyKey,
-        signature    : VerifySignature,
-        dataToVerify : DataToVerify,
+        key          : Key,
+        signature    : string,
+        dataToVerify : string,
         bytes?       : number): Promise<boolean> {
 
         return Promise.resolve(
@@ -62,8 +63,8 @@ export class SubtleCryptoService {
 
     generateKeyPair(
         algorithm   : GenrateKeyPairAlgorithm,
-        extractable : GenrateKeyPairExtractable,
-        keyUsages   : GenrateKeyPairKeyUsages): Promise<CryptoKeyPair> {
+        extractable : Extractable,
+        keyUsages   : KeyUsages): Promise<CryptoKeyPair> {
 
         return Promise.resolve(
             this._subtle
@@ -74,8 +75,8 @@ export class SubtleCryptoService {
 
     generateKey(
         algorithm   : GenrateKeyAlgorithm,
-        extractable : GenrateKeyExtractable,
-        keyUsages   : GenrateKeyKeyUsages): Promise<CryptoKey> {
+        extractable : Extractable,
+        keyUsages   : KeyUsages): Promise<CryptoKey> {
 
         return Promise.resolve(
             this._subtle
