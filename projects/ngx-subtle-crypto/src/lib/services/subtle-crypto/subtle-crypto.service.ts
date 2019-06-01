@@ -6,7 +6,7 @@ import { VerifyAlgorithm } from '../../types/verify';
 import { SignAlgorithm } from '../../types/sign';
 import { GenrateKeyAlgorithm } from '../../types/generate-key';
 import { GenrateKeyPairAlgorithm } from '../../types/generate-key-pair';
-import { Key, Extractable, KeyUsages } from '../../types/common';
+import { SubtleKey, SubtleExtractable, SubtleKeyUsages, SubtleKeyPair, SubtleData } from '../../types/common';
 
 @Injectable({
     providedIn: 'root'
@@ -19,8 +19,8 @@ export class SubtleCryptoService {
 
     digest(
         algorithm    : DigestAlgorithm,
-        dataToDigest : string,
-        bytes?       : number): Promise<string> {
+        dataToDigest : SubtleData,
+        bytes?       : number): Promise<SubtleData> {
 
         return Promise.resolve(
             this._subtle
@@ -31,9 +31,9 @@ export class SubtleCryptoService {
 
     sign(
         algorithm   : SignAlgorithm,
-        key         : Key,
-        dataToSign  : string,
-        bytes?      : number): Promise<string> {
+        key         : SubtleKey,
+        dataToSign  : SubtleData,
+        bytes?      : number): Promise<SubtleData> {
 
         return Promise.resolve(
             this._subtle
@@ -44,9 +44,9 @@ export class SubtleCryptoService {
 
     verify(
         algorithm    : VerifyAlgorithm,
-        key          : Key,
-        signature    : string,
-        dataToVerify : string,
+        key          : SubtleKey,
+        signature    : SubtleData,
+        dataToVerify : SubtleData,
         bytes?       : number): Promise<boolean> {
 
         return Promise.resolve(
@@ -63,25 +63,25 @@ export class SubtleCryptoService {
 
     generateKeyPair(
         algorithm   : GenrateKeyPairAlgorithm,
-        extractable : Extractable,
-        keyUsages   : KeyUsages): Promise<CryptoKeyPair> {
+        extractable : SubtleExtractable,
+        keyUsages   : SubtleKeyUsages): Promise<SubtleKeyPair> {
 
         return Promise.resolve(
             this._subtle
                 .generateKey(algorithm, extractable, keyUsages)
-                .then((keyPair: CryptoKeyPair) => keyPair)
+                .then((keyPair: SubtleKeyPair) => keyPair)
         );
     }
 
     generateKey(
         algorithm   : GenrateKeyAlgorithm,
-        extractable : Extractable,
-        keyUsages   : KeyUsages): Promise<CryptoKey> {
+        extractable : SubtleExtractable,
+        keyUsages   : SubtleKeyUsages): Promise<SubtleKey> {
 
         return Promise.resolve(
             this._subtle
                 .generateKey(algorithm, extractable, keyUsages)
-                .then((key: CryptoKey) => key)
+                .then((key: SubtleKey) => key)
         );
     }
 }
