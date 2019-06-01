@@ -1,4 +1,5 @@
-export type Extractable = boolean;
-export type KeyUsages = string[];
-export type Key = CryptoKey;
-export type KeyPair = CryptoKeyPair;
+export type SubtleExtractable = boolean;
+export type SubtleKeyUsages = KeyUsage[];
+export type SubtleKey = CryptoKey;
+export type SubtleKeyPair = CryptoKeyPair;
+export type SubtleData = string;
