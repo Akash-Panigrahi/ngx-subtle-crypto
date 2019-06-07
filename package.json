@@ -1,5 +1,5 @@
 {
-  "name": "@skyp/ngx-subtle-crypto",
+  "name": "ngx-subtle-crypto",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
