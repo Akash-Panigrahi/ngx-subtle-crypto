@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build_lib": "ng build ngx-subtle-crypto",
-    "watch_lib": "npm run build -- --watch",
+    "watch_lib": "npm run build_lib -- --watch",
     "npm_pack": "cd dist/ngx-subtle-crypto && npm pack",
     "package": "npm run build_lib && npm run npm_pack"
   },
